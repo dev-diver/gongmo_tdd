@@ -5,7 +5,7 @@ import (
 )
 
 type Server interface {
-	ListenAndServe(port ...string) error
+	ListenAndServe(port string) error
 }
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 }
 
 func ListenForGracefulShutdown(server Server, port string) {
-	if err := server.ListenAndServe(); err != nil {
+	if err := server.ListenAndServe(port); err != nil {
 		log.Fatalf("graceful shutdown 실패, 응답이 전달되지 않았을 수 있음 %v", err)
 	}
 	log.Println("graceful shutdown 성공, 모든 응답이 전달됨")

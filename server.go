@@ -18,9 +18,10 @@ func NewFiberServer() *FiberServer {
 	return fastServer
 }
 
-func (s *FiberServer) ListenAndServe(port ...string) error {
-	if len(port) > 0 {
-		return s.app.Listen(":" + port[0])
-	}
-	return s.app.Listen(":8080")
+func (s *FiberServer) ListenAndServe(port string) error {
+	return s.app.Listen(":" + port)
+}
+
+func (s *FiberServer) Shutdown() error {
+	return s.app.Shutdown()
 }
