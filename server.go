@@ -5,22 +5,27 @@ import (
 	"net/http"
 )
 
-type Server struct {
+type HttpServer struct {
 	ctx        context.Context
 	httpServer *http.Server
 }
 
-func NewServer(port string) *Server {
-	ctx := context.Background()
-	httpServer := &http.Server{Addr: ":" + port, Handler: http.HandlerFunc(Handler)}
+var defaultPort = "8080"
 
-	return &Server{
+func NewHttpServer() *HttpServer {
+	ctx := context.Background()
+	httpServer := &http.Server{Addr: ":" + defaultPort, Handler: http.HandlerFunc(Handler)}
+
+	return &HttpServer{
 		ctx:        ctx,
 		httpServer: httpServer,
 	}
 }
 
-func (s *Server) ListenAndServe() error {
+func (s *HttpServer) ListenAndServe(port ...string) error {
+	if len(port) > 0 {
+		s.httpServer.Addr = ":" + port[0]
+	}
 	return s.httpServer.ListenAndServe()
 }
 
