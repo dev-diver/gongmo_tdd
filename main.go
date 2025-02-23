@@ -1,19 +1,16 @@
 package main
 
 import (
-	"context"
 	"log"
-	"net/http"
 )
 
 func main() {
 	var (
-		ctx        = context.Background()
-		httpServer = &http.Server{Addr: ":8080", Handler: http.HandlerFunc(Handler)}
-		server     = NewServer(httpServer)
+		port   = "8080"
+		server = NewServer(port)
 	)
 
-	if err := server.ListenAndServe(ctx); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("graceful shutdown 실패, 응답이 전달되지 않았을 수 있음 %v", err)
 	}
 

@@ -7,6 +7,6 @@
 
 ## 사용 프레임워크
 
-- fastapi
+- fiber
 - gorm
 - testify - assert 등 사용

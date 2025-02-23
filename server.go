@@ -6,14 +6,21 @@ import (
 )
 
 type Server struct {
+	ctx        context.Context
 	httpServer *http.Server
 }
 
-func NewServer(httpServer *http.Server) *Server {
-	return &Server{httpServer: httpServer}
+func NewServer(port string) *Server {
+	ctx := context.Background()
+	httpServer := &http.Server{Addr: ":" + port, Handler: http.HandlerFunc(Handler)}
+
+	return &Server{
+		ctx:        ctx,
+		httpServer: httpServer,
+	}
 }
 
-func (s *Server) ListenAndServe(ctx context.Context) error {
+func (s *Server) ListenAndServe() error {
 	return s.httpServer.ListenAndServe()
 }
 
