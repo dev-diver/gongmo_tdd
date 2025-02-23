@@ -9,7 +9,7 @@ type Server interface {
 }
 
 func main() {
-	server := NewHttpServer()
+	server := NewFiberServer()
 	ListenForGracefulShutdown(server, "8080")
 }
 
