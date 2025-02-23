@@ -1,6 +1,8 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 type FiberServer struct {
 	app *fiber.App
@@ -11,11 +13,13 @@ func NewFiberServer() *FiberServer {
 		app: fiber.New(),
 	}
 
-	fastServer.app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	fastServer.app.Get("/my-account", AccountHandler)
 
 	return fastServer
+}
+
+func AccountHandler(c *fiber.Ctx) error {
+	return c.SendString("0")
 }
 
 func (s *FiberServer) ListenAndServe(port string) error {
