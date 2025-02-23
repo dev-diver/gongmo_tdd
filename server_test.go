@@ -1,22 +1,27 @@
 package main
 
 import (
+	"io"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+type TestServer interface {
+	Test(request *http.Request) (*http.Response, error)
+}
+
 func TestGETMyAccount(t *testing.T) {
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
 		request, _ := http.NewRequest("GET", "http://localhost:8080/my-account", nil)
-		response := httptest.NewRecorder()
-		AccountServer(response, request)
 
-		got := response.Body.String()
+		server := NewFiberServer()
+		response, _ := server.Test(request)
 
-		assert.Equal(t, response.Code, 200)
-		assert.Equal(t, got, "0")
+		got, _ := io.ReadAll(response.Body)
+
+		assert.Equal(t, response.StatusCode, 200)
+		assert.Equal(t, string(got), "0")
 	})
 }
