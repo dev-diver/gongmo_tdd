@@ -23,7 +23,11 @@ type StubStore struct {
 }
 
 func (s *StubStore) GetAccount(id AccountId) (int, error) {
-	return s.store[id], nil
+	account, ok := s.store[id]
+	if !ok {
+		return 0, fmt.Errorf("account not found: %s", id)
+	}
+	return account, nil
 }
 
 func TestGETMyAccount(t *testing.T) {

@@ -58,7 +58,11 @@ func NewAccountController(store AccountStore) Controller {
 }
 
 func (a *AccountService) GetAccount(id AccountId) (int, error) {
-	return a.store.GetAccount(id)
+	account, err := a.store.GetAccount(id)
+	if err != nil {
+		return 0, fmt.Errorf("account not found: %w", err)
+	}
+	return account, nil
 }
 
 func (a *AccountController) AccountHandler(c *fiber.Ctx) error {
