@@ -1,8 +1,7 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -18,14 +17,14 @@ func NewTestServer() TestServer {
 	return NewFiberServer() // 다른 서버를 사용할 경우 이 함수를 수정
 }
 
+type AccountId string
+
 func TestGETMyAccount(t *testing.T) {
 
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
 
-		data := map[string]interface{}{
-			"id": "1",
-		}
-		request := newGetAccountRequest(data)
+		id := AccountId("1")
+		request := newGetAccountRequest(id)
 		server := NewTestServer()
 		response, _ := server.Test(request)
 
@@ -36,10 +35,8 @@ func TestGETMyAccount(t *testing.T) {
 	})
 
 	t.Run("계좌 정보 가져오기2", func(t *testing.T) {
-		data := map[string]interface{}{
-			"id": "2",
-		}
-		request := newGetAccountRequest(data)
+		id := AccountId("2")
+		request := newGetAccountRequest(id)
 		server := NewTestServer()
 		response, _ := server.Test(request)
 
@@ -50,8 +47,7 @@ func TestGETMyAccount(t *testing.T) {
 	})
 }
 
-func newGetAccountRequest(data map[string]interface{}) *http.Request {
-	json, _ := json.Marshal(data)
-	request, _ := http.NewRequest("GET", "/account", bytes.NewBuffer(json))
+func newGetAccountRequest(id AccountId) *http.Request {
+	request, _ := http.NewRequest("GET", fmt.Sprintf("/account/%s", id), nil)
 	return request
 }
