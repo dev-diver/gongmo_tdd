@@ -31,6 +31,11 @@ func (s *StubStore) GetAccount(id AccountId) (int, error) {
 	return account, nil
 }
 
+func (s *StubStore) StoreAccount(id AccountId, amount int) error {
+	s.store[id] = amount
+	return nil
+}
+
 func TestGETMyAccount(t *testing.T) {
 	server := NewTestServer()
 

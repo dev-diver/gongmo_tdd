@@ -16,6 +16,11 @@ func (i *InMemoryAccountStore) GetAccount(id AccountId) (int, error) {
 	return i.store[id], nil
 }
 
+func (i *InMemoryAccountStore) StoreAccount(id AccountId, amount int) error {
+	i.store[id] = amount
+	return nil
+}
+
 func main() {
 	server := NewFiberServer()
 	accountStore := &InMemoryAccountStore{}

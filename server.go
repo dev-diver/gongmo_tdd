@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -35,6 +36,7 @@ type AccountId string
 
 type AccountStore interface {
 	GetAccount(id AccountId) (int, error)
+	StoreAccount(id AccountId, amount int) error
 }
 
 type AccountService struct {
@@ -47,6 +49,7 @@ type AccountController struct {
 
 func (a *AccountController) Register(app *fiber.App) {
 	app.Get("/account/:id", a.AccountHandler)
+	app.Post("/account/:id", a.PostAccountHandler)
 }
 
 func NewAccountController(store AccountStore) Controller {
@@ -65,6 +68,10 @@ func (a *AccountService) GetAccount(id AccountId) (int, error) {
 	return account, nil
 }
 
+func (a *AccountService) StoreAccount(id AccountId, amount int) error {
+	return a.store.StoreAccount(id, amount)
+}
+
 func (a *AccountController) AccountHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
 	account, err := a.service.GetAccount(AccountId(id))
@@ -72,6 +79,17 @@ func (a *AccountController) AccountHandler(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusNotFound)
 	}
 	return c.SendString(fmt.Sprintf("%d", account))
+}
+
+func (a *AccountController) PostAccountHandler(c *fiber.Ctx) error {
+	id := c.Params("id")
+	amount := c.Body()
+	amountInt, err := strconv.Atoi(string(amount))
+	if err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+	a.service.StoreAccount(AccountId(id), amountInt)
+	return c.SendStatus(fiber.StatusAccepted)
 }
 
 func (s *FiberServer) ListenAndServe(port string) error {
