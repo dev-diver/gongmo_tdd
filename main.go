@@ -8,9 +8,17 @@ type Server interface {
 	ListenAndServe(port string) error
 }
 
+type InMemoryAccountStore struct {
+	store map[AccountId]int
+}
+
+func (i *InMemoryAccountStore) GetAccount(id AccountId) (int, error) {
+	return i.store[id], nil
+}
+
 func main() {
 	server := NewFiberServer()
-	accountStore := NewAccountStore()
+	accountStore := &InMemoryAccountStore{}
 	accountController := NewAccountController(accountStore)
 	server.Register(accountController)
 	ListenForGracefulShutdown(server, "8080")

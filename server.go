@@ -37,23 +37,6 @@ type AccountStore interface {
 	GetAccount(id AccountId) (int, error)
 }
 
-type AStore struct {
-	store map[AccountId]int
-}
-
-func NewAccountStore() *AStore {
-	store := &AStore{
-		store: make(map[AccountId]int),
-	}
-	store.store[AccountId("1")] = 0
-	store.store[AccountId("2")] = 1
-	return store
-}
-
-func (s *AStore) GetAccount(id AccountId) (int, error) {
-	return s.store[id], nil
-}
-
 type AccountService struct {
 	store AccountStore
 }
