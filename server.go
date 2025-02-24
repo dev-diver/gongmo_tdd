@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +26,23 @@ func (s *FiberServer) Test(request *http.Request) (*http.Response, error) {
 }
 
 func AccountHandler(c *fiber.Ctx) error {
-	return c.SendString("0")
+	body := c.Body()
+
+	var data map[string]interface{}
+	err := json.Unmarshal(body, &data)
+	if err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	id := data["id"]
+
+	if id == "1" {
+		return c.SendString("0")
+	} else if id == "2" {
+		return c.SendString("1")
+	}
+
+	return c.SendStatus(fiber.StatusNotFound)
 }
 
 func (s *FiberServer) ListenAndServe(port string) error {
