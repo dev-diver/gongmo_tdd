@@ -23,7 +23,10 @@ func NewTestServer() TestServer {
 
 type StubStore struct {
 	store      map[domain.AccountId]int
-	storeCalls []string
+	storeCalls []struct {
+		Id     domain.AccountId
+		Amount int
+	}
 }
 
 func (s *StubStore) GetAccount(id domain.AccountId) (int, error) {
@@ -35,7 +38,10 @@ func (s *StubStore) GetAccount(id domain.AccountId) (int, error) {
 }
 
 func (s *StubStore) StoreAccount(id domain.AccountId, amount int) error {
-	s.storeCalls = append(s.storeCalls, string(id))
+	s.storeCalls = append(s.storeCalls, struct {
+		Id     domain.AccountId
+		Amount int
+	}{Id: id, Amount: amount})
 	return nil
 }
 
@@ -103,7 +109,10 @@ func TestStoreAccount(t *testing.T) {
 		response, _ := server.Test(request)
 
 		assert.Equal(t, response.StatusCode, http.StatusAccepted)
-		assert.Equal(t, stubStore.storeCalls, []string{"1"})
+		assert.Equal(t, stubStore.storeCalls[0], struct {
+			Id     domain.AccountId
+			Amount int
+		}{Id: domain.AccountId("1"), Amount: 100})
 	})
 }
 
