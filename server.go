@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +15,7 @@ func NewFiberServer() *FiberServer {
 		app: fiber.New(),
 	}
 
-	fastServer.app.Get("/account", AccountHandler)
+	fastServer.app.Get("/account/:id", AccountHandler)
 
 	return fastServer
 }
@@ -26,15 +25,7 @@ func (s *FiberServer) Test(request *http.Request) (*http.Response, error) {
 }
 
 func AccountHandler(c *fiber.Ctx) error {
-	body := c.Body()
-
-	var data map[string]interface{}
-	err := json.Unmarshal(body, &data)
-	if err != nil {
-		return c.SendStatus(fiber.StatusBadRequest)
-	}
-
-	id := data["id"]
+	id := c.Params("id")
 
 	if id == "1" {
 		return c.SendString("0")
