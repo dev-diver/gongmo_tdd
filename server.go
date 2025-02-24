@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -16,6 +18,10 @@ func NewFiberServer() *FiberServer {
 	fastServer.app.Get("/my-account", AccountHandler)
 
 	return fastServer
+}
+
+func (s *FiberServer) Test(request *http.Request) (*http.Response, error) {
+	return s.app.Test(request)
 }
 
 func AccountHandler(c *fiber.Ctx) error {
