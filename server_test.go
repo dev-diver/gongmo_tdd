@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -77,5 +78,27 @@ func TestGETMyAccount(t *testing.T) {
 
 func newGetAccountRequest(id AccountId) *http.Request {
 	request, _ := http.NewRequest("GET", fmt.Sprintf("/account/%s", id), nil)
+	return request
+}
+
+func TestStoreAccount(t *testing.T) {
+	server := NewTestServer()
+
+	stubStore := &StubStore{
+		store: map[AccountId]int{},
+	}
+	accountController := NewAccountController(stubStore)
+	server.Register(accountController)
+
+	t.Run("계좌 정보 저장하기", func(t *testing.T) {
+		request := newPostAccountRequest("1", 100)
+		response, _ := server.Test(request)
+
+		assert.Equal(t, response.StatusCode, http.StatusAccepted)
+	})
+}
+
+func newPostAccountRequest(id AccountId, amount int) *http.Request {
+	request, _ := http.NewRequest("POST", fmt.Sprintf("/account/%s", id), bytes.NewBuffer([]byte(fmt.Sprintf("%d", amount))))
 	return request
 }
