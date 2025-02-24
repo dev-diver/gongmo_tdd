@@ -18,9 +18,25 @@ func NewTestServer() TestServer {
 	return NewFiberServer() // 다른 서버를 사용할 경우 이 함수를 수정
 }
 
+type StubStore struct {
+	store map[AccountId]int
+}
+
+func (s *StubStore) GetAccount(id AccountId) (int, error) {
+	return s.store[id], nil
+}
+
 func TestGETMyAccount(t *testing.T) {
 	server := NewTestServer()
-	accountController := NewAccountController(NewAccountStore())
+
+	stubStore := &StubStore{
+		store: map[AccountId]int{
+			"1": 0,
+			"2": 1,
+		},
+	}
+
+	accountController := NewAccountController(stubStore)
 	server.Register(accountController)
 
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
