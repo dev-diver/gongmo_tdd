@@ -15,12 +15,16 @@ func NewFiberServer() *FiberServer {
 	fastServer := &FiberServer{
 		app: fiber.New(),
 	}
-	accountStore := NewAccountStore()
-	accountController := NewAccountController(accountStore)
-
-	fastServer.app.Get("/account/:id", accountController.AccountHandler)
 
 	return fastServer
+}
+
+type Controller interface {
+	Register(app *fiber.App)
+}
+
+func (f *FiberServer) Register(controller Controller) {
+	controller.Register(f.app)
 }
 
 func (s *FiberServer) Test(request *http.Request) (*http.Response, error) {
@@ -58,7 +62,11 @@ type AccountController struct {
 	service AccountService
 }
 
-func NewAccountController(store AccountStore) *AccountController {
+func (a *AccountController) Register(app *fiber.App) {
+	app.Get("/account/:id", a.AccountHandler)
+}
+
+func NewAccountController(store AccountStore) Controller {
 	return &AccountController{
 		service: AccountService{
 			store: store,

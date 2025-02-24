@@ -10,6 +10,9 @@ type Server interface {
 
 func main() {
 	server := NewFiberServer()
+	accountStore := NewAccountStore()
+	accountController := NewAccountController(accountStore)
+	server.Register(accountController)
 	ListenForGracefulShutdown(server, "8080")
 }
 

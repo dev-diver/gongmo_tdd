@@ -11,6 +11,7 @@ import (
 
 type TestServer interface {
 	Test(request *http.Request) (*http.Response, error)
+	Register(controller Controller)
 }
 
 func NewTestServer() TestServer {
@@ -18,12 +19,14 @@ func NewTestServer() TestServer {
 }
 
 func TestGETMyAccount(t *testing.T) {
+	server := NewTestServer()
+	accountController := NewAccountController(NewAccountStore())
+	server.Register(accountController)
 
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
 
 		id := AccountId("1")
 		request := newGetAccountRequest(id)
-		server := NewTestServer()
 		response, _ := server.Test(request)
 
 		got, _ := io.ReadAll(response.Body)
@@ -35,7 +38,6 @@ func TestGETMyAccount(t *testing.T) {
 	t.Run("계좌 정보 가져오기2", func(t *testing.T) {
 		id := AccountId("2")
 		request := newGetAccountRequest(id)
-		server := NewTestServer()
 		response, _ := server.Test(request)
 
 		got, _ := io.ReadAll(response.Body)
