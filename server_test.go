@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/dev-diver/gongmo/controller"
+	"github.com/dev-diver/gongmo/domain"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,10 +22,10 @@ func NewTestServer() TestServer {
 }
 
 type StubStore struct {
-	store map[AccountId]int
+	store map[domain.AccountId]int
 }
 
-func (s *StubStore) GetAccount(id AccountId) (int, error) {
+func (s *StubStore) GetAccount(id domain.AccountId) (int, error) {
 	account, ok := s.store[id]
 	if !ok {
 		return 0, fmt.Errorf("account not found: %s", id)
@@ -31,7 +33,7 @@ func (s *StubStore) GetAccount(id AccountId) (int, error) {
 	return account, nil
 }
 
-func (s *StubStore) StoreAccount(id AccountId, amount int) error {
+func (s *StubStore) StoreAccount(id domain.AccountId, amount int) error {
 	s.store[id] = amount
 	return nil
 }
@@ -40,18 +42,18 @@ func TestGETMyAccount(t *testing.T) {
 	server := NewTestServer()
 
 	stubStore := &StubStore{
-		store: map[AccountId]int{
+		store: map[domain.AccountId]int{
 			"1": 0,
 			"2": 1,
 		},
 	}
 
-	accountController := NewAccountController(stubStore)
+	accountController := controller.NewAccountController(stubStore)
 	server.Register(accountController)
 
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
 
-		id := AccountId("1")
+		id := domain.AccountId("1")
 		request := newGetAccountRequest(id)
 		response, _ := server.Test(request)
 
@@ -62,7 +64,7 @@ func TestGETMyAccount(t *testing.T) {
 	})
 
 	t.Run("계좌 정보 가져오기2", func(t *testing.T) {
-		id := AccountId("2")
+		id := domain.AccountId("2")
 		request := newGetAccountRequest(id)
 		response, _ := server.Test(request)
 
@@ -73,7 +75,7 @@ func TestGETMyAccount(t *testing.T) {
 	})
 
 	t.Run("없는 계좌 정보 가져오기", func(t *testing.T) {
-		id := AccountId("3")
+		id := domain.AccountId("3")
 		request := newGetAccountRequest(id)
 		response, _ := server.Test(request)
 
@@ -81,7 +83,7 @@ func TestGETMyAccount(t *testing.T) {
 	})
 }
 
-func newGetAccountRequest(id AccountId) *http.Request {
+func newGetAccountRequest(id domain.AccountId) *http.Request {
 	request, _ := http.NewRequest("GET", fmt.Sprintf("/account/%s", id), nil)
 	return request
 }
@@ -90,20 +92,20 @@ func TestStoreAccount(t *testing.T) {
 	server := NewTestServer()
 
 	stubStore := &StubStore{
-		store: map[AccountId]int{},
+		store: map[domain.AccountId]int{},
 	}
-	accountController := NewAccountController(stubStore)
+	accountController := controller.NewAccountController(stubStore)
 	server.Register(accountController)
 
 	t.Run("계좌 정보 저장하기", func(t *testing.T) {
-		request := newPostAccountRequest("1", 100)
+		request := newPostAccountRequest(domain.AccountId("1"), 100)
 		response, _ := server.Test(request)
 
 		assert.Equal(t, response.StatusCode, http.StatusAccepted)
 	})
 }
 
-func newPostAccountRequest(id AccountId, amount int) *http.Request {
+func newPostAccountRequest(id domain.AccountId, amount int) *http.Request {
 	request, _ := http.NewRequest("POST", fmt.Sprintf("/account/%s", id), bytes.NewBuffer([]byte(fmt.Sprintf("%d", amount))))
 	return request
 }

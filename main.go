@@ -2,6 +2,9 @@ package main
 
 import (
 	"log"
+
+	"github.com/dev-diver/gongmo/controller"
+	"github.com/dev-diver/gongmo/domain"
 )
 
 type Server interface {
@@ -9,14 +12,14 @@ type Server interface {
 }
 
 type InMemoryAccountStore struct {
-	store map[AccountId]int
+	store map[domain.AccountId]int
 }
 
-func (i *InMemoryAccountStore) GetAccount(id AccountId) (int, error) {
+func (i *InMemoryAccountStore) GetAccount(id domain.AccountId) (int, error) {
 	return i.store[id], nil
 }
 
-func (i *InMemoryAccountStore) StoreAccount(id AccountId, amount int) error {
+func (i *InMemoryAccountStore) StoreAccount(id domain.AccountId, amount int) error {
 	i.store[id] = amount
 	return nil
 }
@@ -24,7 +27,7 @@ func (i *InMemoryAccountStore) StoreAccount(id AccountId, amount int) error {
 func main() {
 	server := NewFiberServer()
 	accountStore := &InMemoryAccountStore{}
-	accountController := NewAccountController(accountStore)
+	accountController := controller.NewAccountController(accountStore)
 	server.Register(accountController)
 	ListenForGracefulShutdown(server, "8080")
 }
