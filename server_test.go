@@ -47,7 +47,7 @@ func TestGETMyAccount(t *testing.T) {
 
 		got, _ := io.ReadAll(response.Body)
 
-		assert.Equal(t, response.StatusCode, 200)
+		assert.Equal(t, response.StatusCode, http.StatusOK)
 		assert.Equal(t, string(got), "0")
 	})
 
@@ -58,7 +58,7 @@ func TestGETMyAccount(t *testing.T) {
 
 		got, _ := io.ReadAll(response.Body)
 
-		assert.Equal(t, response.StatusCode, 200)
+		assert.Equal(t, response.StatusCode, http.StatusOK)
 		assert.Equal(t, string(got), "1")
 	})
 
@@ -67,7 +67,7 @@ func TestGETMyAccount(t *testing.T) {
 		request := newGetAccountRequest(id)
 		response, _ := server.Test(request)
 
-		assert.Equal(t, response.StatusCode, 404)
+		assert.Equal(t, response.StatusCode, http.StatusNotFound)
 	})
 }
 
