@@ -25,9 +25,7 @@ func TestGETMyAccount(t *testing.T) {
 		data := map[string]interface{}{
 			"id": "1",
 		}
-		json, _ := json.Marshal(data)
-		request, _ := http.NewRequest("GET", "/account", bytes.NewBuffer(json))
-
+		request := newGetAccountRequest(data)
 		server := NewTestServer()
 		response, _ := server.Test(request)
 
@@ -36,4 +34,10 @@ func TestGETMyAccount(t *testing.T) {
 		assert.Equal(t, response.StatusCode, 200)
 		assert.Equal(t, string(got), "0")
 	})
+}
+
+func newGetAccountRequest(data map[string]interface{}) *http.Request {
+	json, _ := json.Marshal(data)
+	request, _ := http.NewRequest("GET", "/account", bytes.NewBuffer(json))
+	return request
 }
