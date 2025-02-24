@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"testing"
@@ -19,7 +21,12 @@ func NewTestServer() TestServer {
 func TestGETMyAccount(t *testing.T) {
 
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
-		request, _ := http.NewRequest("GET", "http://localhost:8080/my-account", nil)
+
+		data := map[string]interface{}{
+			"id": "1",
+		}
+		json, _ := json.Marshal(data)
+		request, _ := http.NewRequest("GET", "/account", bytes.NewBuffer(json))
 
 		server := NewTestServer()
 		response, _ := server.Test(request)
