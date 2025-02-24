@@ -15,15 +15,8 @@ func NewFiberServer() *FiberServer {
 	fastServer := &FiberServer{
 		app: fiber.New(),
 	}
-
 	accountStore := NewAccountStore()
-	accountService := AccountService{
-		store: accountStore,
-	}
-
-	accountController := AccountController{
-		service: accountService,
-	}
+	accountController := NewAccountController(accountStore)
 
 	fastServer.app.Get("/account/:id", accountController.AccountHandler)
 
@@ -63,6 +56,14 @@ type AccountService struct {
 
 type AccountController struct {
 	service AccountService
+}
+
+func NewAccountController(store AccountStore) *AccountController {
+	return &AccountController{
+		service: AccountService{
+			store: store,
+		},
+	}
 }
 
 func (a *AccountService) GetAccount(id AccountId) (int, error) {
