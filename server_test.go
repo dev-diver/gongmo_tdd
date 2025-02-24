@@ -17,8 +17,6 @@ func NewTestServer() TestServer {
 	return NewFiberServer() // 다른 서버를 사용할 경우 이 함수를 수정
 }
 
-type AccountId string
-
 func TestGETMyAccount(t *testing.T) {
 
 	t.Run("계좌 정보 가져오기", func(t *testing.T) {
