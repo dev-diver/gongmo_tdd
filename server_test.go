@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/dev-diver/gongmo/controller"
@@ -129,6 +130,7 @@ func TestStoreAccount(t *testing.T) {
 }
 
 func newPostAccountRequest(id domain.AccountId, amount int) *http.Request {
-	request := httptest.NewRequest("POST", fmt.Sprintf("/account/%s", id), bytes.NewBuffer([]byte(fmt.Sprintf("%d", amount))))
-	return request
+	url := strings.Clone(fmt.Sprintf("/account/%s", id)) // URL 문자열을 복사
+	body := bytes.NewBuffer([]byte(fmt.Sprintf("%d", amount)))
+	return httptest.NewRequest("POST", url, body)
 }

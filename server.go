@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -28,7 +29,8 @@ func (f *FiberServer) Register(controller Controller) {
 }
 
 func (s *FiberServer) Test(request *http.Request) (*http.Response, error) {
-	return s.app.Test(request)
+	clonedRequest := request.Clone(context.Background())
+	return s.app.Test(clonedRequest)
 }
 
 func (s *FiberServer) ListenAndServe(port string) error {

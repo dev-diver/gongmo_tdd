@@ -39,7 +39,7 @@ func (a *AccountController) AccountHandler(c *fiber.Ctx) error {
 }
 
 func (a *AccountController) PostAccountHandler(c *fiber.Ctx) error {
-	id := string(append([]byte(nil), c.Params("id")...))
+	id := c.Params("id")
 	amount := c.Body()
 	amountInt, err := strconv.Atoi(string(amount))
 	if err != nil {

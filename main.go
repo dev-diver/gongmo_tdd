@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"strings"
 
 	"github.com/dev-diver/gongmo/domain"
 )
@@ -22,16 +22,13 @@ func NewInMemoryAccountStore() *InMemoryAccountStore {
 }
 
 func (i *InMemoryAccountStore) GetAccount(id domain.AccountId) (int, error) {
-	fmt.Printf("Retrieving ID: %v\n", id)
-	fmt.Printf("Get Current map state: %+v\n", i.accounts)
-	return i.accounts[id], nil
+	idCopy := domain.AccountId(strings.Clone(string(id)))
+	return i.accounts[idCopy], nil
 }
 
 func (i *InMemoryAccountStore) StoreAccount(id domain.AccountId, amount int) error {
-	fmt.Printf("Before Current map state: %+v\n", i.accounts)
-	fmt.Printf("Storing ID: %v, Amount: %d\n", id, amount)
-	i.accounts[id] = amount
-	fmt.Printf("After Current map state: %+v\n", i.accounts)
+	idCopy := domain.AccountId(strings.Clone(string(id)))
+	i.accounts[idCopy] = amount
 	return nil
 }
 
