@@ -61,6 +61,14 @@ func TestGETMyAccount(t *testing.T) {
 		assert.Equal(t, response.StatusCode, 200)
 		assert.Equal(t, string(got), "1")
 	})
+
+	t.Run("없는 계좌 정보 가져오기", func(t *testing.T) {
+		id := AccountId("3")
+		request := newGetAccountRequest(id)
+		response, _ := server.Test(request)
+
+		assert.Equal(t, response.StatusCode, 404)
+	})
 }
 
 func newGetAccountRequest(id AccountId) *http.Request {
