@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/dev-diver/gongmo/controller"
@@ -91,7 +92,7 @@ func TestGETMyAccount(t *testing.T) {
 }
 
 func newGetAccountRequest(id domain.AccountId) *http.Request {
-	request, _ := http.NewRequest("GET", fmt.Sprintf("/account/%s", id), nil)
+	request := httptest.NewRequest("GET", fmt.Sprintf("/account/%s", id), nil)
 	return request
 }
 
@@ -114,9 +115,20 @@ func TestStoreAccount(t *testing.T) {
 			Amount int
 		}{Id: domain.AccountId("1"), Amount: 100})
 	})
+
+	t.Run("계좌 정보 저장하기", func(t *testing.T) {
+		request := newPostAccountRequest(domain.AccountId("3"), 150)
+		response, _ := server.Test(request)
+
+		assert.Equal(t, response.StatusCode, http.StatusAccepted)
+		assert.Equal(t, stubStore.storeCalls[1], struct {
+			Id     domain.AccountId
+			Amount int
+		}{Id: domain.AccountId("3"), Amount: 150})
+	})
 }
 
 func newPostAccountRequest(id domain.AccountId, amount int) *http.Request {
-	request, _ := http.NewRequest("POST", fmt.Sprintf("/account/%s", id), bytes.NewBuffer([]byte(fmt.Sprintf("%d", amount))))
+	request := httptest.NewRequest("POST", fmt.Sprintf("/account/%s", id), bytes.NewBuffer([]byte(fmt.Sprintf("%d", amount))))
 	return request
 }

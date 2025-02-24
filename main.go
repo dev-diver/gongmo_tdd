@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/dev-diver/gongmo/controller"
 	"github.com/dev-diver/gongmo/domain"
 )
 
@@ -12,23 +12,34 @@ type Server interface {
 }
 
 type InMemoryAccountStore struct {
-	store map[domain.AccountId]int
+	accounts map[domain.AccountId]int
+}
+
+func NewInMemoryAccountStore() *InMemoryAccountStore {
+	return &InMemoryAccountStore{
+		accounts: make(map[domain.AccountId]int),
+	}
 }
 
 func (i *InMemoryAccountStore) GetAccount(id domain.AccountId) (int, error) {
-	return i.store[id], nil
+	fmt.Printf("Retrieving ID: %v\n", id)
+	fmt.Printf("Get Current map state: %+v\n", i.accounts)
+	return i.accounts[id], nil
 }
 
 func (i *InMemoryAccountStore) StoreAccount(id domain.AccountId, amount int) error {
-	i.store[id] = amount
+	fmt.Printf("Before Current map state: %+v\n", i.accounts)
+	fmt.Printf("Storing ID: %v, Amount: %d\n", id, amount)
+	i.accounts[id] = amount
+	fmt.Printf("After Current map state: %+v\n", i.accounts)
 	return nil
 }
 
 func main() {
 	server := NewFiberServer()
-	accountStore := &InMemoryAccountStore{}
-	accountController := controller.NewAccountController(accountStore)
-	server.Register(accountController)
+	// accountStore := NewInMemoryAccountStore()
+	// accountController := controller.NewAccountController(accountStore)
+	// server.Register(accountController)
 	ListenForGracefulShutdown(server, "8080")
 }
 
