@@ -15,7 +15,7 @@ func NewFiberServer() *FiberServer {
 		app: fiber.New(),
 	}
 
-	fastServer.app.Get("/my-account", AccountHandler)
+	fastServer.app.Get("/account", AccountHandler)
 
 	return fastServer
 }
