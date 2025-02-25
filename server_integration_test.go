@@ -16,19 +16,16 @@ func TestStoreAccountAndGetThem(t *testing.T) {
 	accountController := controller.NewAccountController(store)
 	server.Register(accountController)
 
-	req1 := newPostAccountRequest(domain.AccountId("1"), 100)
-	server.Test(req1)
+	server.Test(newPostAccountRequest(domain.AccountId("3"), 100))
+	server.Test(newPostAccountRequest(domain.AccountId("1"), 300))
 
-	req2 := newPostAccountRequest(domain.AccountId("3"), 300)
-	server.Test(req2)
-
-	response, _ := server.Test(newGetAccountRequest(domain.AccountId("1")))
+	response, _ := server.Test(newGetAccountRequest(domain.AccountId("3")))
 	got, _ := io.ReadAll(response.Body)
 
 	assert.Equal(t, response.StatusCode, http.StatusOK)
 	assert.Equal(t, "100", string(got))
 
-	response, _ = server.Test(newGetAccountRequest(domain.AccountId("3")))
+	response, _ = server.Test(newGetAccountRequest(domain.AccountId("1")))
 	got, _ = io.ReadAll(response.Body)
 
 	assert.Equal(t, response.StatusCode, http.StatusOK)
