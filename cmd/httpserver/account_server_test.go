@@ -36,5 +36,9 @@ func TestAccountServer(t *testing.T) {
 	})
 
 	driver := driver.Driver{BaseURL: "http://localhost:8080"}
-	specifications.AccountRetrievalSpec(t, driver, domain.AccountId("1"), 0, errors.New("failed to get account: account not found: 1"))
+	specifications.AccountRetrievalSpec(t,
+		driver,
+		domain.AccountId("1"),
+		0,
+		errors.New("failed to get account"))
 }

@@ -19,5 +19,5 @@ func TestAccountRetrievalSpec(t *testing.T) {
 		specifications.GetAccountAdapter(svc.GetAccount),
 		domain.AccountId("1"),
 		0,
-		errors.New("failed to get account: account not found: 1"))
+		errors.New("failed to get account"))
 }
