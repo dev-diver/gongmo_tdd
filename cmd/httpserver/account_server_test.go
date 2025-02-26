@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/dev-diver/gongmo/adapters/httpserver"
 	"github.com/dev-diver/gongmo/domain"
-	"github.com/dev-diver/gongmo/driver"
 	"github.com/dev-diver/gongmo/specifications"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
@@ -35,7 +35,7 @@ func TestAccountServer(t *testing.T) {
 		assert.NoError(t, container.Terminate(ctx))
 	})
 
-	driver := driver.Driver{BaseURL: "http://localhost:8080"}
+	driver := httpserver.Driver{BaseURL: "http://localhost:8080"}
 	specifications.AccountRetrievalSpec(t,
 		driver,
 		domain.AccountId("1"),
