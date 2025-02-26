@@ -33,7 +33,7 @@ func (a *AccountController) AccountHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
 	account, err := a.service.GetAccount(domain.AccountId(id))
 	if err != nil {
-		return c.SendStatus(fiber.StatusNotFound)
+		return c.Status(fiber.StatusNotFound).SendString(err.Error())
 	}
 	return c.SendString(fmt.Sprintf("%d", account))
 }
@@ -43,7 +43,7 @@ func (a *AccountController) PostAccountHandler(c *fiber.Ctx) error {
 	amount := c.Body()
 	amountInt, err := strconv.Atoi(string(amount))
 	if err != nil {
-		return c.SendStatus(fiber.StatusBadRequest)
+		return c.Status(fiber.StatusBadRequest).SendString("invalid amount")
 	}
 	a.service.StoreAccount(domain.AccountId(id), amountInt)
 	return c.SendStatus(fiber.StatusAccepted)

@@ -2,6 +2,7 @@ package driver
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -24,6 +25,10 @@ func (d Driver) GetAccount(id domain.AccountId) (int, error) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return 0, err
+	}
+
+	if response.StatusCode == http.StatusNotFound {
+		return 0, errors.New(string(body))
 	}
 
 	return strconv.Atoi(string(body))

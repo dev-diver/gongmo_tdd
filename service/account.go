@@ -24,7 +24,7 @@ func NewAccountService(store AccountStore) *AccountService {
 func (a *AccountService) GetAccount(id domain.AccountId) (int, error) {
 	account, err := a.store.GetAccount(id)
 	if err != nil {
-		return 0, fmt.Errorf("account not found: %w", err)
+		return 0, fmt.Errorf("failed to get account: %w", err)
 	}
 	return account, nil
 }

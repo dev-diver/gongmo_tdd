@@ -14,11 +14,19 @@ type Accounter interface {
 
 func AccountRetrievalSpec(t testing.TB, accounter Accounter, id domain.AccountId, expectedAmount int, expectedErr error) {
 	got, err := accounter.GetAccount(id)
-	assert.NoError(t, err)
-	assert.Equal(t, got, expectedAmount)
+	if expectedErr != nil {
+		assert.Equal(t, expectedErr, err)
+	} else {
+		assert.NoError(t, err)
+		assert.Equal(t, expectedAmount, got)
+	}
 }
 
 func AccountStorageSpec(t testing.TB, service Accounter, id domain.AccountId, amount int, expectedErr error) {
 	err := service.StoreAccount(id, amount)
-	assert.Equal(t, err, expectedErr)
+	if expectedErr != nil {
+		assert.Equal(t, expectedErr, err)
+	} else {
+		assert.NoError(t, err)
+	}
 }
