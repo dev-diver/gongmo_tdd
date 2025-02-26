@@ -7,12 +7,13 @@ import (
 
 	"github.com/dev-diver/gongmo/controller"
 	"github.com/dev-diver/gongmo/domain"
+	"github.com/dev-diver/gongmo/store"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStoreAccountAndGetThem(t *testing.T) {
 	server := NewFiberServer()
-	store := NewInMemoryAccountStore()
+	store := store.NewInMemoryAccountStore()
 	accountController := controller.NewAccountController(store)
 	server.Register(accountController)
 
