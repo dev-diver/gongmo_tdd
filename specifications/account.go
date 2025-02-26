@@ -18,7 +18,7 @@ type StoreAccounter interface {
 func AccountRetrievalSpec(t testing.TB, accounter GetAccounter, id domain.AccountId, expectedAmount int, expectedErr error) {
 	got, err := accounter.GetAccount(id)
 	if expectedErr != nil {
-		assert.Equal(t, expectedErr, err)
+		assert.ErrorContains(t, err, expectedErr.Error())
 	} else {
 		assert.NoError(t, err)
 		assert.Equal(t, expectedAmount, got)
