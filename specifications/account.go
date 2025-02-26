@@ -7,12 +7,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type Accounter interface {
+type GetAccounter interface {
 	GetAccount(id domain.AccountId) (int, error)
+}
+
+type StoreAccounter interface {
 	StoreAccount(id domain.AccountId, amount int) error
 }
 
-func AccountRetrievalSpec(t testing.TB, accounter Accounter, id domain.AccountId, expectedAmount int, expectedErr error) {
+func AccountRetrievalSpec(t testing.TB, accounter GetAccounter, id domain.AccountId, expectedAmount int, expectedErr error) {
 	got, err := accounter.GetAccount(id)
 	if expectedErr != nil {
 		assert.Equal(t, expectedErr, err)
@@ -22,7 +25,7 @@ func AccountRetrievalSpec(t testing.TB, accounter Accounter, id domain.AccountId
 	}
 }
 
-func AccountStorageSpec(t testing.TB, service Accounter, id domain.AccountId, amount int, expectedErr error) {
+func AccountStorageSpec(t testing.TB, service StoreAccounter, id domain.AccountId, amount int, expectedErr error) {
 	err := service.StoreAccount(id, amount)
 	if expectedErr != nil {
 		assert.Equal(t, expectedErr, err)
